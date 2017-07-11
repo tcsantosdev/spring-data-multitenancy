@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.tcsantos.spring.data.multitenancy.MultitenancyAutoConfiguration
