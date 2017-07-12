@@ -33,6 +33,9 @@ public class MultitenancyAutoConfiguration {
 	@Value("${multitenancy.entity.package.scan}")
 	private String packageToScan;
 
+	@Value("${multitenancy.liquibase.contexts:#{null}}")
+	private String multiTenancyLiquibaseContexts;
+
 	@Value("${multitenancy.liquibase.enabled:true}")
 	private boolean multiTenancyLiquibaseEnabled;
 
@@ -94,6 +97,7 @@ public class MultitenancyAutoConfiguration {
 
 		multiTenantSpringLiquibase.setSchemas(schemas);
 		multiTenantSpringLiquibase.setChangeLog(changeLogPath);
+		multiTenantSpringLiquibase.setContexts(multiTenancyLiquibaseContexts);
 		multiTenantSpringLiquibase.setShouldRun(multiTenancyLiquibaseEnabled);
 
 		return multiTenantSpringLiquibase;
