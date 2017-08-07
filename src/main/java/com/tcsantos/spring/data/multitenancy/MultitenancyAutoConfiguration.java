@@ -84,7 +84,7 @@ public class MultitenancyAutoConfiguration {
 	public MultiTenantSpringLiquibase multiTenantSpringLiquibase(DataSource dataSource,
 			TenantResolver tenantResolver)
 			throws SQLException {
-		MultiTenantSpringLiquibase multiTenantSpringLiquibase = new MultiTenantSpringLiquibase();
+		CustomMultiTenantSpringLiquibase multiTenantSpringLiquibase = new CustomMultiTenantSpringLiquibase();
 		multiTenantSpringLiquibase.setDataSource(dataSource);
 
 		Collection<Tenant> tenants = tenantResolver.resolveAllTenants();
