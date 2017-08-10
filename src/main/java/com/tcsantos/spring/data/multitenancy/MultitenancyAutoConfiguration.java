@@ -10,10 +10,13 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.hibernate.MultiTenancyStrategy;
+import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
+import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -39,7 +42,7 @@ public class MultitenancyAutoConfiguration {
 	@Value("${multitenancy.liquibase.enabled:true}")
 	private boolean multiTenancyLiquibaseEnabled;
 
-	@Value("${multitenancy.liquibase.changelog.path:classpath:db/changelog/db.changelog-tenant-master.xml}")
+	@Value("${multitenancy.liquibase.changelog-path:classpath:db/changelog/db.changelog-tenant-master.xml}")
 	private String changeLogPath;
 
 	@Bean
@@ -75,6 +78,9 @@ public class MultitenancyAutoConfiguration {
 		jpaProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
 		jpaProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
 		jpaProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, tenantIdentifierResolver);
+		jpaProperties.put(org.hibernate.cfg.Environment.PHYSICAL_NAMING_STRATEGY, new ImprovedNamingStrategy());
+		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
+		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		emfBean.setJpaPropertyMap(jpaProperties);
 		return emfBean;
 	}
