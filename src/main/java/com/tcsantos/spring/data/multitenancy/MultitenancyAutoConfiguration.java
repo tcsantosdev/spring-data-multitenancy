@@ -1,10 +1,8 @@
 package com.tcsantos.spring.data.multitenancy;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -18,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -27,23 +26,13 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import com.tcsantos.spring.data.multitenancy.hibernate.CurrentTenantIdentifierResolverDefault;
 import com.tcsantos.spring.data.multitenancy.hibernate.MultiTenantConnectionProviderDefault;
 
-import liquibase.integration.spring.MultiTenantSpringLiquibase;
-
 @Configuration
 @PropertySource("classpath:/multitenancy-default.properties")
+@ComponentScan("com.tcsantos.spring.data.multitenancy")
 public class MultitenancyAutoConfiguration {
 
 	@Value("${multitenancy.entity.package.scan}")
 	private String packageToScan;
-
-	@Value("${multitenancy.liquibase.contexts:#{null}}")
-	private String multiTenancyLiquibaseContexts;
-
-	@Value("${multitenancy.liquibase.enabled:true}")
-	private boolean multiTenancyLiquibaseEnabled;
-
-	@Value("${multitenancy.liquibase.changelog-path:classpath:db/changelog/db.changelog-tenant-master.xml}")
-	private String changeLogPath;
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -88,23 +77,15 @@ public class MultitenancyAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public MultiTenantSpringLiquibase multiTenantSpringLiquibase(DataSource dataSource,
-			TenantResolver tenantResolver)
+			TenantResolver tenantResolver,
+			MultitenancyLiquibaseProperties multitenancyLiquibaseProperties)
 			throws SQLException {
-		CustomMultiTenantSpringLiquibase multiTenantSpringLiquibase = new CustomMultiTenantSpringLiquibase();
+		MultiTenantSpringLiquibase multiTenantSpringLiquibase = new MultiTenantSpringLiquibase(multitenancyLiquibaseProperties);
 		multiTenantSpringLiquibase.setDataSource(dataSource);
 
 		Collection<Tenant> tenants = tenantResolver.resolveAllTenants();
-		
-		List<String> schemas = new ArrayList<String>();
-		
-		for (Tenant tenant : tenants) {
-			schemas.add(tenant.getSchemaName());
-		}
 
-		multiTenantSpringLiquibase.setSchemas(schemas);
-		multiTenantSpringLiquibase.setChangeLog(changeLogPath);
-		multiTenantSpringLiquibase.setContexts(multiTenancyLiquibaseContexts);
-		multiTenantSpringLiquibase.setShouldRun(multiTenancyLiquibaseEnabled);
+		multiTenantSpringLiquibase.setTenants(tenants);
 
 		return multiTenantSpringLiquibase;
 	}

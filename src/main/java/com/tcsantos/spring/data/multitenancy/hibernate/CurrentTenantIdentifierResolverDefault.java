@@ -2,6 +2,7 @@ package com.tcsantos.spring.data.multitenancy.hibernate;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 
+import com.tcsantos.spring.data.multitenancy.Tenant;
 import com.tcsantos.spring.data.multitenancy.TenantResolver;
 
 public class CurrentTenantIdentifierResolverDefault implements CurrentTenantIdentifierResolver {
@@ -14,7 +15,9 @@ public class CurrentTenantIdentifierResolverDefault implements CurrentTenantIden
 
 	@Override
 	public String resolveCurrentTenantIdentifier() {
-		return tenantResolver.resolveCurrentTenant().getIdentifier();
+		Tenant tenant = tenantResolver.resolveCurrentTenant();
+
+		return tenant != null ? tenant.getIdentifier() : null;
 	}
 
 	@Override
