@@ -54,7 +54,7 @@ public class MultiTenantConnectionProviderDefault implements MultiTenantConnecti
 
 	@Override
 	public boolean supportsAggressiveRelease() {
-		return true;
+		return false;
 	}
 
 	@SuppressWarnings("rawtypes")
