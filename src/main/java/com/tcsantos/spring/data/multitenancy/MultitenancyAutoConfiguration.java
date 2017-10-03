@@ -34,7 +34,7 @@ public class MultitenancyAutoConfiguration {
 	@Value("${multitenancy.entity.package.scan}")
 	private String packageToScan;
 
-	@Value("${spring.jpa.database-platform}")
+	@Value("${spring.jpa.database-platform:#{null}}")
 	private String databasePlatform;
 
 	@Bean
