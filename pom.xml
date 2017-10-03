@@ -5,7 +5,7 @@
 
 	<groupId>com.tcsantos.spring</groupId>
 	<artifactId>spring-data-multitenancy</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 	<packaging>jar</packaging>
 
 	<name>spring-data-multitenancy</name>
