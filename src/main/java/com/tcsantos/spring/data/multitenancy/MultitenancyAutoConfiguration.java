@@ -34,6 +34,9 @@ public class MultitenancyAutoConfiguration {
 	@Value("${multitenancy.entity.package.scan}")
 	private String packageToScan;
 
+	@Value("${spring.jpa.database-platform}")
+	private String databasePlatform;
+
 	@Bean
 	@ConditionalOnMissingBean
 	public CurrentTenantIdentifierResolver currentTenantIdentifierResolver(TenantResolver tenantResolver) {
@@ -68,6 +71,7 @@ public class MultitenancyAutoConfiguration {
 		jpaProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
 		jpaProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, tenantIdentifierResolver);
 		jpaProperties.put(org.hibernate.cfg.Environment.PHYSICAL_NAMING_STRATEGY, new ImprovedNamingStrategy());
+		jpaProperties.put(org.hibernate.cfg.Environment.DIALECT, databasePlatform);
 		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		emfBean.setJpaPropertyMap(jpaProperties);
