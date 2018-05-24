@@ -40,6 +40,9 @@ public class MultitenancyAutoConfiguration {
 
 	@Value("${spring.jpa.show-sql:#{null}}")
 	private String showSql;
+
+	@Value("${spring.jpa.hibernate.ddl-auto:#{none}}")
+	private String ddlAuto;
 	
 	@Bean
 	@ConditionalOnMissingBean
@@ -77,6 +80,7 @@ public class MultitenancyAutoConfiguration {
 		jpaProperties.put(org.hibernate.cfg.Environment.PHYSICAL_NAMING_STRATEGY, new ImprovedNamingStrategy());
 		jpaProperties.put(org.hibernate.cfg.Environment.DIALECT, databasePlatform);
 		jpaProperties.put(org.hibernate.cfg.Environment.SHOW_SQL, showSql);
+		jpaProperties.put(org.hibernate.cfg.Environment.HBM2DDL_AUTO, ddlAuto);
 		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		emfBean.setJpaPropertyMap(jpaProperties);
